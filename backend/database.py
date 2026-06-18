@@ -13,12 +13,14 @@ if not SQLALCHEMY_DATABASE_URL or SQLALCHEMY_DATABASE_URL.strip() == "":
 if SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
     SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-# Only SQLite needs check_same_thread=False
-connect_args = {"check_same_thread": False} if SQLALCHEMY_DATABASE_URL.startswith("sqlite") else {}
-
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args=connect_args
-)
+try:
+    connect_args = {"check_same_thread": False} if SQLALCHEMY_DATABASE_URL.startswith("sqlite") else {}
+    engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args=connect_args)
+except Exception as e:
+    print(f"Warning: Invalid DATABASE_URL provided. Falling back to SQLite. Error: {e}")
+    SQLALCHEMY_DATABASE_URL = "sqlite:///./hydro_sense.db"
+    connect_args = {"check_same_thread": False}
+    engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args=connect_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
