@@ -8,12 +8,7 @@ import '../models/user_profile.dart';
 
 class AuthService {
   static String get _baseUrl {
-    if (kIsWeb) {
-      return 'http://127.0.0.1:8000';
-    } else if (Platform.isAndroid) {
-      return 'http://10.121.42.201:8000'; 
-    }
-    return 'http://127.0.0.1:8000';
+    return 'https://smart-water-monitor-api.onrender.com';
   }
   static const String _keyCurrentUser = 'current_user';
   static bool firebaseInitialized = false;
@@ -42,7 +37,7 @@ class AuthService {
         'name': displayName,
         'phone_number': (phoneNumber != null && phoneNumber.trim().isNotEmpty) ? phoneNumber.trim() : null,
       }),
-    ).timeout(const Duration(seconds: 30));
+    );
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -75,7 +70,7 @@ class AuthService {
         'email_or_phone': email,
         'password': password,
       }),
-    ).timeout(const Duration(seconds: 30));
+    );
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -132,7 +127,7 @@ class AuthService {
           'name': googleUser.displayName ?? googleUser.email.split('@')[0],
           'google_id': googleUser.id,
         }),
-      ).timeout(const Duration(seconds: 30));
+      );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -162,7 +157,7 @@ class AuthService {
       Uri.parse('$_baseUrl/auth/forgot-password'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'contact': email}),
-    ).timeout(const Duration(seconds: 30));
+    );
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -181,7 +176,7 @@ class AuthService {
         'contact': email,
         'new_password': newPassword,
       }),
-    ).timeout(const Duration(seconds: 30));
+    );
 
     if (response.statusCode != 200) {
       final error = jsonDecode(response.body);
@@ -197,7 +192,7 @@ class AuthService {
         'uid': uid,
         'new_password': newPassword,
       }),
-    ).timeout(const Duration(seconds: 30));
+    );
 
     if (response.statusCode == 200) {
       return true;
@@ -221,7 +216,7 @@ class AuthService {
       Uri.parse('$_baseUrl/auth/profile/$uid'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(requestBody),
-    ).timeout(const Duration(seconds: 30));
+    );
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);

@@ -3,8 +3,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Get database URL from environment variable, fallback to local sqlite
-SQLALCHEMY_DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///./hydro_sense.db")
+# Get database URL from environment variable
+SQLALCHEMY_DATABASE_URL = os.environ.get("DATABASE_URL")
+if not SQLALCHEMY_DATABASE_URL or SQLALCHEMY_DATABASE_URL.strip() == "":
+    SQLALCHEMY_DATABASE_URL = "sqlite:///./hydro_sense.db"
 
 # Render uses 'postgres://' which SQLAlchemy 1.4+ no longer supports. 
 # We must replace it with 'postgresql://'

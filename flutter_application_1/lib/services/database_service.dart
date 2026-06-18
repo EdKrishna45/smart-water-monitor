@@ -6,12 +6,7 @@ import 'dart:io' show Platform;
 
 class DatabaseService {
   static String get _baseUrl {
-    if (kIsWeb) {
-      return 'http://127.0.0.1:8000';
-    } else if (Platform.isAndroid) {
-      return 'http://10.121.42.201:8000'; 
-    }
-    return 'http://127.0.0.1:8000';
+    return 'https://smart-water-monitor-api.onrender.com';
   }
 
   Future<void> saveWaterLog(String uid, WaterLog log) async {
@@ -30,7 +25,7 @@ class DatabaseService {
         'waterCategory': log.waterCategory,
         'waterLevel': log.waterLevel,
       }),
-    ).timeout(const Duration(seconds: 30));
+    );
 
     if (response.statusCode != 200) {
       throw Exception('Failed to save log');
@@ -38,7 +33,7 @@ class DatabaseService {
   }
 
   Future<List<WaterLog>> fetchWaterLogs(String uid) async {
-    final response = await http.get(Uri.parse('$_baseUrl/logs/$uid')).timeout(const Duration(seconds: 30));
+    final response = await http.get(Uri.parse('$_baseUrl/logs/$uid'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
@@ -64,7 +59,7 @@ class DatabaseService {
   }
 
   Future<void> deleteWaterLog(String uid, String logId) async {
-    final response = await http.delete(Uri.parse('$_baseUrl/logs/$uid/$logId')).timeout(const Duration(seconds: 30));
+    final response = await http.delete(Uri.parse('$_baseUrl/logs/$uid/$logId'));
 
     if (response.statusCode != 200) {
       throw Exception('Failed to delete log');
